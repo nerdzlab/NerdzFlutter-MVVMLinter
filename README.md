@@ -1,39 +1,31 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# MVVM Linter
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+The MVVM Linter is a tool designed to enforce best practices and coding standards in MVVM (Model-View-ViewModel) architecture within your projects. It provides a set of rules and guidelines to help maintain code quality, readability, and consistency.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **Member Order**: Enforces a specified order for class members.
 
-## Getting started
+## Installation
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+To install the MVVM Linter, follow these steps:
 
-## Usage
+1. Add the following dependencies to your `pubspec.yaml`:
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
+```bash
+flutter pub add --dev custom_lint
+flutter pub add --dev mvvm_linter
 ```
 
-## Additional information
+2. Update your `analysis_options.yaml`:
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```yaml
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  plugins:
+    - custom_lint
+custom_lint:
+  rules:
+    - mvvm_linter
+```
