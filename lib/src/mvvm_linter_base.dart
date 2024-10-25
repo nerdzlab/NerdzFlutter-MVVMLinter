@@ -1,6 +1,12 @@
-// TODO: Put public facing types in this file.
+import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:mvvm_linter/src/rules/custom_order_rule.dart';
 
-/// Checks if you are awesome. Spoiler: you are.
-class Awesome {
-  bool get isAwesome => true;
+// Entrypoint of plugin
+PluginBase createPlugin() => _PluginLints();
+
+// The class listing all the [LintRule]s and [Assist]s defined by our plugin
+class _PluginLints extends PluginBase {
+  // Lint rules
+  @override
+  List<LintRule> getLintRules(CustomLintConfigs configs) => [ClassOrderRule()];
 }

@@ -1,15 +1,17 @@
 name: mvvm_linter
-description: A starting point for Dart libraries or applications.
+description: The MVVM Linter is a tool designed to enforce best practices and coding standards in MVVM.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/nerdzlab/NerdzFlutter-MVVMLinter
 
 environment:
   sdk: ^3.5.2
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
+  analyzer: ^6.7.0
+  analyzer_plugin: ^0.11.3
+  custom_lint_builder: ^0.6.8
+  collection: ^1.18.0
 
 dev_dependencies:
+  build_runner: ^2.4.13
   lints: ^4.0.0
-  test: ^1.24.0
