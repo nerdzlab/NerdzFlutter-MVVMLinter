@@ -1,5 +1,5 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:mvvm_linter/src/rules/custom_order_rule.dart';
+import 'package:mvvm_linter/src/rules/custom_order/custom_order_rule.dart';
 
 // Entrypoint of plugin
 PluginBase createPlugin() => _PluginLints();
