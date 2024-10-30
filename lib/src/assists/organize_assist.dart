@@ -1,7 +1,13 @@
-part of 'custom_order_rule.dart';
+import 'dart:developer' as d;
 
-class _OrganizeOrder extends DartFix {
-  _OrganizeOrder({required List<ElementType> lintOrder})
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/source/source_range.dart';
+import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:mvvm_linter/src/data/element_type.dart';
+import 'package:mvvm_linter/src/utils/classifier.dart';
+
+class OrganizeOrderAssist extends DartAssist {
+  OrganizeOrderAssist({required List<ElementType> lintOrder})
       : _lintOrder = lintOrder;
 
   late final List<ElementType> _lintOrder;
@@ -11,24 +17,43 @@ class _OrganizeOrder extends DartFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    error.AnalysisError analysisError,
-    List<error.AnalysisError> others,
+    SourceRange target,
   ) {
-    d.log('FIX RUN AGAIN');
+    d.log('---------FIX RUN AGAIN---------');
+    d.log('${target.toString()}');
 
     context.registry.addClassDeclaration((node) {
+      d.log(node.name.toString());
+      d.log(node.sourceRange.toString());
+
+      if (!target.intersects(node.sourceRange)) return;
       if (!Classifier.isNotStatefulOrStateless(node)) return;
 
       // Collect all members in the current class and their types
       final List<(ElementType, ClassMember)> currentClassElementsOrder = [];
+      bool isNoErrorFlag = true;
       for (var member in node.members) {
+        d.log("SOURCE: ${member.toSource()}");
+        d.log("STRING: ${member.toString()}");
+        d.log("COMMENT: ${member.sourceRange}");
+        d.log("FROM NODE: ${node.declaredElement.toString()}");
+
         final ElementType? elementType = Classifier.getElementType(member);
-        if (elementType != null) {
+        if (elementType == null) continue;
+
+        if (currentClassElementsOrder.isEmpty) {
           currentClassElementsOrder.add((elementType, member));
+          continue;
         }
+
+        if (_lintOrder.indexOf(currentClassElementsOrder.last.$1) >
+            _lintOrder.indexOf(elementType)) {
+          isNoErrorFlag = false;
+        }
+        currentClassElementsOrder.add((elementType, member));
       }
 
-      if (currentClassElementsOrder.isEmpty) return;
+      if (currentClassElementsOrder.isEmpty || isNoErrorFlag) return;
 
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Organize class members',
@@ -56,7 +81,7 @@ class _OrganizeOrder extends DartFix {
 
           // Replace the first member with the second member's code
           builder.addReplacement(currentRange, (buffer) {
-            buffer.write(correctMember.toSource());
+            buffer.write(correctMember.toString());
           });
         }
       });

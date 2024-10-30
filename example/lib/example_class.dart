@@ -4,32 +4,41 @@
 import 'dart:ui';
 
 class AnotherClass {
-  set as(int a) => a = a;
-  int a = 3;
-}
+  /// dsd
+  set as(int a) => a = a; 
 
-class TestClass {
-  VoidCallback? callback; // Callback
-  final AnotherClass _anotherClass = AnotherClass();
-
-  late final lateValue = 0;
-
-  /// Valuable
-  final value = 0;
-  int _s = -34;
-
-  // Sd
-  set sS(int v) => _s = v;
-  get s => _s;
+  /// sd
+  int a = 3; //ds
 
   void foo() {
-    int a = 0;
-
-    // PC do something
+    /// sd
+    int w = 2;
+    // sd
   }
-
-  TestClass();
 }
+
+// class TestClass {
+//   VoidCallback? callback; // Callback
+//   final AnotherClass _anotherClass = AnotherClass();
+
+//   late final lateValue = 0;
+
+//   /// Valuable
+//   final value = 0;
+//   int _s = -34;
+
+//   // Sd
+//   set sS(int v) => _s = v;
+//   get s => _s;
+
+//   void foo() {
+//     int a = 0;
+
+//     // PC do something
+//   }
+
+//   TestClass();
+// }
 
       /// Structure of viewModel should be:
       ///

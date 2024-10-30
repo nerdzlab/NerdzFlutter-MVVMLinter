@@ -1,14 +1,9 @@
 import 'dart:developer' as d;
 
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' as error;
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:mvvm_linter/src/data/element_type.dart';
 import 'package:mvvm_linter/src/utils/classifier.dart';
-
-part 'custom_order_fix.dart';
 
 class ClassOrderRule extends DartLintRule {
   ClassOrderRule(
@@ -53,8 +48,8 @@ class ClassOrderRule extends DartLintRule {
   ) {
     context.registry.addClassDeclaration(
       (node) {
-        d.log('------------------------------------');
-        d.log('CLASS MEMBER: ${node.declaredElement?.name}');
+        // d.log('------------------------------------');
+        // d.log('CLASS MEMBER: ${node.declaredElement?.name}');
 
         if (!Classifier.isNotStatefulOrStateless(node)) return;
 
@@ -62,7 +57,7 @@ class ClassOrderRule extends DartLintRule {
 
         for (var member in node.members) {
           final ElementType? elementType = Classifier.getElementType(member);
-          d.log('CLASS m.type: $elementType');
+          // d.log('CLASS m.type: $elementType');
 
           if (elementType == null) continue;
 
@@ -71,8 +66,8 @@ class ClassOrderRule extends DartLintRule {
             continue;
           }
 
-          d.log(
-              'CLASS index: ${_lintOrder.indexOf(_currentClassElementsOrder.last)} : ${_lintOrder.indexOf(elementType)}');
+          // d.log(
+          //     'CLASS index: ${_lintOrder.indexOf(_currentClassElementsOrder.last)} : ${_lintOrder.indexOf(elementType)}');
           if (_lintOrder.indexOf(_currentClassElementsOrder.last) >
               _lintOrder.indexOf(elementType)) {
             reporter.atEntity(
@@ -88,7 +83,4 @@ class ClassOrderRule extends DartLintRule {
       },
     );
   }
-
-  @override
-  List<Fix> getFixes() => [_OrganizeOrder(lintOrder: _lintOrder)];
 }
