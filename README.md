@@ -13,8 +13,7 @@ To install the MVVM Linter, follow these steps:
 1. Add the following dependencies to your `pubspec.yaml`:
 
 ```bash
-flutter pub add --dev custom_lint
-flutter pub add --dev mvvm_linter
+flutter pub add --dev custom_lint mvvm_linter
 ```
 
 2. Update your `analysis_options.yaml`:

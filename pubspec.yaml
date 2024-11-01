@@ -1,6 +1,6 @@
 name: mvvm_linter
 description: The MVVM Linter is a tool designed to enforce best practices and coding standards in MVVM.
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/nerdzlab/NerdzFlutter-MVVMLinter
 
 environment:
@@ -9,7 +9,7 @@ environment:
 dependencies:
   analyzer: ^6.7.0
   analyzer_plugin: ^0.11.3
-  custom_lint_builder: ^0.6.8
+  custom_lint_builder: ^0.7.0
   collection: ^1.18.0
 
 dev_dependencies:
