@@ -1,3 +1,10 @@
+## 1.0.2
+
+### Changed
+
+- Updated dependencies
+- Updated README
+
 ## 1.0.1
 
 ### Changed
