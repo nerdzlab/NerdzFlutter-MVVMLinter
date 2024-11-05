@@ -1,3 +1,9 @@
+## 1.1.0
+
+### Added
+
+- Organize class members action.
+
 ## 1.0.2
 
 ### Changed

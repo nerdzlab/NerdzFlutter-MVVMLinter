@@ -51,11 +51,7 @@ class ClassOrderRule extends DartLintRule {
         // d.log('------------------------------------');
         // d.log('CLASS MEMBER: ${node.declaredElement?.name}');
 
-        final bool isNotStatefulOrStateless =
-            Classifier.isNotStatefulOrStateless(node);
-        // d.log('CLASS isNotStatefulOrStateless: $isNotStatefulOrStateless');
-
-        if (!isNotStatefulOrStateless) return;
+        if (!Classifier.isNotStatefulOrStateless(node)) return;
 
         _currentClassElementsOrder.clear();
 
