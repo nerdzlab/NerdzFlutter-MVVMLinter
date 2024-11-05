@@ -1,11 +1,11 @@
 // Example of another class
-// ignore_for_file: avoid_print, unused_element, unused_field, prefer_final_fields
+// ignore_for_file: avoid_print, unused_element, unused_field, prefer_final_fields, unused_local_variable
 
-import 'dart:ui';
+// import 'dart:ui';
 
 class AnotherClass {
   /// dsd
-  set as(int a) => a = a; 
+  set as(int a) => a = a;
 
   /// sd
   int a = 3; //ds
@@ -40,13 +40,3 @@ class AnotherClass {
 //   TestClass();
 // }
 
-      /// Structure of viewModel should be:
-      ///
-      /// - constructor -- ConstructorDeclarationImpl
-      /// - completions -- CallBacks FieldDeclarationImpl
-      /// - repositories -- FieldDeclarationImpl
-      /// - final properties public/private -- FieldDeclarationImpl
-      /// - late properties public/private -- FieldDeclarationImpl
-      /// - get/set properties public/private -- MethodDeclarationImpl
-      /// - methods public/private -- MethodDeclarationImpl
-      ///

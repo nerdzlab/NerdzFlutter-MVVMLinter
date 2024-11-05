@@ -1,4 +1,4 @@
-import 'dart:developer' as d;
+// import 'dart:developer' as d;
 
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
