@@ -5,6 +5,7 @@ The MVVM Linter is a tool designed to enforce best practices and coding standard
 ## Features
 
 - **Member Order**: Enforces a specified order for class members.
+- **Organize Class Order Action**: Orders class members according to a predefined structure.
 
 ## Installation
 
