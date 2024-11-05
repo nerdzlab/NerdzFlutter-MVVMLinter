@@ -1,4 +1,3 @@
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -50,7 +49,9 @@ class Classifier {
       return ElementType.otherProperty;
     } else if (member is MethodDeclaration) {
       if (member.isGetter || member.isSetter) return ElementType.getterSetter;
-      return ElementType.method;
+      return member.name.lexeme.startsWith("_")
+          ? ElementType.methodPrivate
+          : ElementType.methodPublic;
     } else if (member is ConstructorDeclaration) {
       return ElementType.constructor;
     }

@@ -18,16 +18,7 @@ class ClassOrderRule extends DartLintRule {
       /// - get/set properties public/private -- MethodDeclarationImpl
       /// - methods public/private -- MethodDeclarationImpl
       ///
-      List<ElementType> lintOrder = const [
-        ElementType.constructor,
-        ElementType.completion,
-        ElementType.classObject,
-        ElementType.nonChangeableProperty,
-        ElementType.lateProperty,
-        ElementType.otherProperty,
-        ElementType.getterSetter,
-        ElementType.method,
-      ]})
+      required List<ElementType> lintOrder})
       : _lintOrder = lintOrder,
         super(code: _code);
 

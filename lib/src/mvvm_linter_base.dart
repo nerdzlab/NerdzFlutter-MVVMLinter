@@ -16,7 +16,8 @@ class _PluginLints extends PluginBase {
     ElementType.lateProperty,
     ElementType.otherProperty,
     ElementType.getterSetter,
-    ElementType.method,
+    ElementType.methodPublic,
+    ElementType.methodPrivate,
   ];
 
   @override
