@@ -14,7 +14,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  custom_lint: ^0.6.8
+  custom_lint: ^0.7.0
   mvvm_linter:
     path: ../
 

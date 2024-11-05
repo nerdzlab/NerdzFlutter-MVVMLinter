@@ -6,7 +6,8 @@ enum ElementType {
   lateProperty,
   otherProperty,
   getterSetter,
-  method;
+  methodPublic,
+  methodPrivate;
 
   String getDisplayName() => switch (this) {
         constructor => 'Constructors',
@@ -16,6 +17,7 @@ enum ElementType {
         lateProperty => 'Late Properties',
         otherProperty => 'Non Final/Const/Static/Late Properties',
         getterSetter => 'Getters or Setters',
-        method => 'Methods',
+        methodPublic => 'Public Methods',
+        methodPrivate => 'Private Methods',
       };
 }

@@ -4,16 +4,16 @@
 // import 'dart:ui';
 
 class AnotherClass {
-  /// dsd
-  set as(int a) => a = a;
+  int a = 3;
 
-  /// sd
-  int a = 3; //ds
+  set as(int a) => a = a; //ds
 
-  void foo() {
-    /// sd
+  void _foo() {
     int w = 2;
-    // sd
+  }
+
+  void foo2() {
+    int w = 122;
   }
 }
 

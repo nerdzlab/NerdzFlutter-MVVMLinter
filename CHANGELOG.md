@@ -1,3 +1,10 @@
+## 1.1.1
+
+### Added
+
+- Detection of private and public members.
+- Auto formatting on action.
+
 ## 1.1.0
 
 ### Added

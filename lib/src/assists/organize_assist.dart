@@ -84,6 +84,8 @@ class OrganizeOrderAssist extends DartAssist {
             buffer.write(correctMember.toString());
           });
         }
+
+        builder.format(node.sourceRange);
       });
     });
   }
