@@ -1,4 +1,4 @@
-// import 'dart:developer' as d;
+import 'dart:developer' as d;
 
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -51,11 +51,7 @@ class ClassOrderRule extends DartLintRule {
         // d.log('------------------------------------');
         // d.log('CLASS MEMBER: ${node.declaredElement?.name}');
 
-        final bool isNotStatefulOrStateless =
-            Classifier.isNotStatefulOrStateless(node);
-        // d.log('CLASS isNotStatefulOrStateless: $isNotStatefulOrStateless');
-
-        if (!isNotStatefulOrStateless) return;
+        if (!Classifier.isNotStatefulOrStateless(node)) return;
 
         _currentClassElementsOrder.clear();
 
