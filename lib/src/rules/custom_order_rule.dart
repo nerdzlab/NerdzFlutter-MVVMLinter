@@ -1,30 +1,22 @@
-// import 'dart:developer' as d;
+import 'dart:developer' as d;
 
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:mvvm_linter/src/data/element_type.dart';
+import 'package:mvvm_linter/src/data/member_data.dart';
 import 'package:mvvm_linter/src/utils/classifier.dart';
 
 class ClassOrderRule extends DartLintRule {
   ClassOrderRule(
-      {
-      /// Structure of viewModel should be:
-      ///
-      /// - constructor -- ConstructorDeclarationImpl
-      /// - completions -- CallBacks FieldDeclarationImpl
-      /// - repositories -- FieldDeclarationImpl
-      /// - final properties public/private -- FieldDeclarationImpl
-      /// - late properties public/private -- FieldDeclarationImpl
-      /// - get/set properties public/private -- MethodDeclarationImpl
-      /// - methods public/private -- MethodDeclarationImpl
-      ///
-      required List<ElementType> lintOrder})
+      {required List<ElementType> lintOrder, bool enableLogs = false})
       : _lintOrder = lintOrder,
+        _enableLogs = enableLogs,
         super(code: _code);
 
-  /// Correct order in class
+  // Correct order in class
   late final List<ElementType> _lintOrder;
-  final List<ElementType> _currentClassElementsOrder = [];
+
+  final bool _enableLogs;
 
   static const _code = LintCode(
     name: 'class_order_rule',
@@ -37,39 +29,65 @@ class ClassOrderRule extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
+    // Listen for any classes.
+    //
+    // On open of project, files. Editing or cursor changing
     context.registry.addClassDeclaration(
       (node) {
-        // d.log('------------------------------------');
-        // d.log('CLASS MEMBER: ${node.declaredElement?.name}');
+        if (_enableLogs) {
+          d.log('------------------------------------');
+          d.log('CLASS MEMBER: ${node.declaredElement?.name}');
+        }
 
+        // Ignore analyze if this class stateless or stateful
         if (!Classifier.isNotStatefulOrStateless(node)) return;
 
-        _currentClassElementsOrder.clear();
+        final List<MemberData> currentClassElementsOrder = [];
 
+        // Collecting all class members (values, methods, etc)
         for (var member in node.members) {
           final ElementType? elementType = Classifier.getElementType(member);
-          // d.log('CLASS m.type: $elementType');
+          if (_enableLogs) {
+            d.log('CLASS m.type: $elementType');
+          }
 
+          // Unknown element type
           if (elementType == null) continue;
 
-          if (_currentClassElementsOrder.isEmpty) {
-            _currentClassElementsOrder.add(elementType);
+          // First element, no need in analyze
+          if (currentClassElementsOrder.isEmpty) {
+            currentClassElementsOrder
+                .add(MemberData(type: elementType, member: member));
             continue;
           }
 
-          // d.log(
-          //     'CLASS index: ${_lintOrder.indexOf(_currentClassElementsOrder.last)} : ${_lintOrder.indexOf(elementType)}');
-          if (_lintOrder.indexOf(_currentClassElementsOrder.last) >
-              _lintOrder.indexOf(elementType)) {
-            reporter.atEntity(
-                member,
-                LintCode(
-                    name: 'class_order_rule',
-                    problemMessage:
-                        '${elementType.getDisplayName()} should be before ${_currentClassElementsOrder.last.getDisplayName()}'));
-          }
+          currentClassElementsOrder
+              .add(MemberData(type: elementType, member: member));
+        }
 
-          _currentClassElementsOrder.add(elementType);
+        // Replacing special sequence/structs
+        List<MemberData> formattedList =
+            Classifier.detectSequences(currentClassElementsOrder);
+
+        // Reporting
+        for (var i = 1; i < formattedList.length; i++) {
+          if (_lintOrder.indexOf(formattedList[i - 1].type) >
+              _lintOrder.indexOf(formattedList[i].type)) {
+            final errorCode = LintCode(
+                name: 'class_order_rule',
+                problemMessage:
+                    '${formattedList[i].type.getDisplayName()} should be before ${formattedList[i - 1].type.getDisplayName()}');
+
+            if (formattedList[i].members.isNotEmpty) {
+              reporter.atOffset(
+                  offset: formattedList[i].members.first.offset,
+                  length: formattedList[i].members.last.end -
+                      formattedList[i].members.first.offset,
+                  errorCode: errorCode);
+            } else {
+              reporter.atEntity(formattedList[i].member, errorCode);
+            }
+          }
         }
       },
     );
