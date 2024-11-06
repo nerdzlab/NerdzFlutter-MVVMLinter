@@ -1,16 +1,19 @@
 import 'dart:developer' as d;
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:mvvm_linter/src/data/element_type.dart';
+import 'package:mvvm_linter/src/data/member_data.dart';
 import 'package:mvvm_linter/src/utils/classifier.dart';
 
 class OrganizeOrderAssist extends DartAssist {
-  OrganizeOrderAssist({required List<ElementType> lintOrder})
-      : _lintOrder = lintOrder;
+  OrganizeOrderAssist(
+      {required List<ElementType> lintOrder, bool enableLogs = false})
+      : _lintOrder = lintOrder,
+        _enableLogs = enableLogs;
 
   late final List<ElementType> _lintOrder;
+  final bool _enableLogs;
 
   @override
   void run(
@@ -19,38 +22,46 @@ class OrganizeOrderAssist extends DartAssist {
     CustomLintContext context,
     SourceRange target,
   ) {
-    d.log('---------FIX RUN AGAIN---------');
-    d.log('${target.toString()}');
+    if (_enableLogs) {
+      d.log('---------FIX RUN AGAIN---------');
+      d.log(target.toString());
+    }
 
     context.registry.addClassDeclaration((node) {
-      d.log(node.name.toString());
-      d.log(node.sourceRange.toString());
+      if (_enableLogs) {
+        d.log(node.name.toString());
+        d.log(node.sourceRange.toString());
+      }
 
       if (!target.intersects(node.sourceRange)) return;
       if (!Classifier.isNotStatefulOrStateless(node)) return;
 
       // Collect all members in the current class and their types
-      final List<(ElementType, ClassMember)> currentClassElementsOrder = [];
+      final List<MemberData> currentClassElementsOrder = [];
       bool isNoErrorFlag = true;
       for (var member in node.members) {
-        d.log("SOURCE: ${member.toSource()}");
-        d.log("STRING: ${member.toString()}");
-        d.log("COMMENT: ${member.sourceRange}");
-        d.log("FROM NODE: ${node.declaredElement.toString()}");
+        if (_enableLogs) {
+          d.log("SOURCE: ${member.toSource()}");
+          d.log("STRING: ${member.toString()}");
+          d.log("COMMENT: ${member.sourceRange}");
+          d.log("FROM NODE: ${node.declaredElement.toString()}");
+        }
 
         final ElementType? elementType = Classifier.getElementType(member);
         if (elementType == null) continue;
 
         if (currentClassElementsOrder.isEmpty) {
-          currentClassElementsOrder.add((elementType, member));
+          currentClassElementsOrder
+              .add(MemberData(type: elementType, member: member));
           continue;
         }
 
-        if (_lintOrder.indexOf(currentClassElementsOrder.last.$1) >
+        if (_lintOrder.indexOf(currentClassElementsOrder.last.type) >
             _lintOrder.indexOf(elementType)) {
           isNoErrorFlag = false;
         }
-        currentClassElementsOrder.add((elementType, member));
+        currentClassElementsOrder
+            .add(MemberData(type: elementType, member: member));
       }
 
       if (currentClassElementsOrder.isEmpty || isNoErrorFlag) return;
@@ -64,8 +75,8 @@ class OrganizeOrderAssist extends DartAssist {
         // Organize members by desired order
         final orderedMembers = _lintOrder.expand((type) {
           return currentClassElementsOrder
-              .where((pair) => pair.$1 == type)
-              .map((pair) => pair.$2);
+              .where((pair) => pair.type == type)
+              .map((pair) => pair.member);
         }).toList();
 
         if (orderedMembers.length != currentClassElementsOrder.length) return;
@@ -73,7 +84,7 @@ class OrganizeOrderAssist extends DartAssist {
         for (var i = 0; i < orderedMembers.length; i++) {
           // Get source code for both members
           final correctMember = orderedMembers[i];
-          final currentMember = currentClassElementsOrder[i].$2;
+          final currentMember = currentClassElementsOrder[i].member;
 
           // Get source ranges for both members
           final currentRange =

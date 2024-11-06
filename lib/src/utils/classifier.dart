@@ -59,6 +59,11 @@ class Classifier {
     return null;
   }
 
+  static bool isGetter(ClassMember member) =>
+      (member is MethodDeclaration) ? member.isGetter : false;
+  static bool isSetter(ClassMember member) =>
+      (member is MethodDeclaration) ? member.isSetter : false;
+
   static bool isNotStatefulOrStateless(ClassDeclaration node) =>
       node.declaredElement?.allSupertypes.any((element) {
         final className =
