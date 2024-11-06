@@ -1,3 +1,10 @@
+## 1.2.0
+
+### Changed
+
+- Updated linter for special code sequences.
+- Updated organize class action to support code sequences.
+
 ## 1.1.1
 
 ### Added
