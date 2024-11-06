@@ -66,6 +66,10 @@ class OrganizeOrderAssist extends DartAssist {
 
       if (currentClassElementsOrder.isEmpty || isNoErrorFlag) return;
 
+      // Replacing special sequence/structs
+      List<MemberData> formattedList =
+          Classifier.detectSequences(currentClassElementsOrder);
+
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Organize class members',
         priority: 1,
@@ -74,25 +78,37 @@ class OrganizeOrderAssist extends DartAssist {
       changeBuilder.addDartFileEdit((builder) {
         // Organize members by desired order
         final orderedMembers = _lintOrder.expand((type) {
-          return currentClassElementsOrder
+          return formattedList
               .where((pair) => pair.type == type)
-              .map((pair) => pair.member);
+              .map((pair) => pair);
         }).toList();
 
-        if (orderedMembers.length != currentClassElementsOrder.length) return;
+        if (orderedMembers.length != formattedList.length) return;
 
         for (var i = 0; i < orderedMembers.length; i++) {
           // Get source code for both members
-          final correctMember = orderedMembers[i];
-          final currentMember = currentClassElementsOrder[i].member;
+          String? correctMemberSource;
+          SourceRange? currentRange;
 
-          // Get source ranges for both members
-          final currentRange =
-              SourceRange(currentMember.offset, currentMember.length);
+          if (orderedMembers[i].members.isEmpty) {
+            correctMemberSource = orderedMembers[i].member.toSource();
+          } else {
+            correctMemberSource =
+                orderedMembers[i].members.map((e) => e.toSource()).join(" ");
+          }
+
+          if (formattedList[i].members.isEmpty) {
+            currentRange = formattedList[i].member.sourceRange;
+          } else {
+            currentRange = SourceRange(
+                formattedList[i].members.first.offset,
+                formattedList[i].members.last.end -
+                    formattedList[i].members.first.offset);
+          }
 
           // Replace the first member with the second member's code
           builder.addReplacement(currentRange, (buffer) {
-            buffer.write(correctMember.toString());
+            buffer.write(correctMemberSource!);
           });
         }
 

@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:mvvm_linter/src/data/element_type.dart';
+import 'package:mvvm_linter/src/data/member_data.dart';
 
 class Classifier {
   static bool isPrimitiveType(String className) {
@@ -74,4 +75,45 @@ class Classifier {
         return true;
       }) ??
       false;
+
+  static List<MemberData> detectSequences(List<MemberData> memberData) {
+    List<MemberData> formattedList = List.from(memberData);
+    int index = 0;
+    int sequenceLength = 3;
+
+    while (index <= formattedList.length - sequenceLength) {
+      final range =
+          formattedList.getRange(index, index + sequenceLength).toList();
+      if (range.length != 3) break;
+
+      if (!Classifier.isGetter(range[0].member) ||
+          range[1].type != ElementType.otherProperty ||
+          range[2].type != ElementType.methodPrivate) {
+        index++;
+        continue;
+      }
+
+      final name = range[0].member.declaredElement?.name;
+      if (!range[1].member.toString().contains("_${name ?? ''}") ||
+          !(range[2].member.declaredElement?.name?.contains('_set') ?? false)) {
+        index++;
+        continue;
+      }
+
+      formattedList.replaceRange(index, index + sequenceLength, [
+        MemberData(
+            type: ElementType.getterSetterStruct,
+            member: range[0].member,
+            members: [
+              range[0].member,
+              range[1].member,
+              range[2].member,
+            ])
+      ]);
+
+      index++;
+    }
+
+    return formattedList;
+  }
 }

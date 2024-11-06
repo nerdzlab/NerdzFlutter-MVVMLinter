@@ -6,7 +6,7 @@
 class AnotherClass {
   // int a = 3;
 
-  set as(int a) => a = a; //ds
+  set as(int a) => a = a;
 
   int get structValue => _structValue;
   int _structValue = 0;

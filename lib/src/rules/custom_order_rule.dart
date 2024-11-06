@@ -66,43 +66,8 @@ class ClassOrderRule extends DartLintRule {
         }
 
         // Replacing special sequence/structs
-        List<MemberData> formattedList = List.from(currentClassElementsOrder);
-        int index = 0;
-        int sequenceLength = 3;
-
-        while (index <= formattedList.length - sequenceLength) {
-          final range =
-              formattedList.getRange(index, index + sequenceLength).toList();
-          if (range.length != 3) break;
-
-          if (!Classifier.isGetter(range[0].member) ||
-              range[1].type != ElementType.otherProperty ||
-              range[2].type != ElementType.methodPrivate) {
-            index++;
-            continue;
-          }
-
-          final name = range[0].member.declaredElement?.name;
-          if (!range[1].member.toString().contains("_${name ?? ''}") ||
-              !(range[2].member.declaredElement?.name?.contains('_set') ??
-                  false)) {
-            index++;
-            continue;
-          }
-
-          formattedList.replaceRange(index, index + sequenceLength, [
-            MemberData(
-                type: ElementType.getterSetterStruct,
-                member: range[0].member,
-                members: [
-                  range[0].member,
-                  range[1].member,
-                  range[2].member,
-                ])
-          ]);
-
-          index++;
-        }
+        List<MemberData> formattedList =
+            Classifier.detectSequences(currentClassElementsOrder);
 
         // Reporting
         for (var i = 1; i < formattedList.length; i++) {
