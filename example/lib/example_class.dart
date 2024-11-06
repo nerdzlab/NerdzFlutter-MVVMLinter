@@ -4,17 +4,20 @@
 // import 'dart:ui';
 
 class AnotherClass {
-  int a = 3;
+  // int a = 3;
 
-  set as(int a) => a = a; //ds
+  set as(int a) => a = a;
 
-  void _foo() {
-    int w = 2;
-  }
+  int get structValue => _structValue;
+  int _structValue = 0;
+  _setStructValue(int structValue) => _structValue = structValue;
+  // void _foo() {
+  //   int w = 2;
+  // }
 
-  void foo2() {
-    int w = 122;
-  }
+  // void foo2() {
+  //   int w = 122;
+  // }
 }
 
 // class TestClass {
