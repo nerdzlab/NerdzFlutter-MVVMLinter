@@ -38,5 +38,7 @@ class _PluginLints extends PluginBase {
       [ClassOrderRule(lintOrder: _lintOrder, enableLogs: _enableDebugLogs)];
 
   @override
-  List<Assist> getAssists() => [OrganizeOrderAssist(lintOrder: _lintOrder)];
+  List<Assist> getAssists() => [
+        OrganizeOrderAssist(lintOrder: _lintOrder, enableLogs: _enableDebugLogs)
+      ];
 }

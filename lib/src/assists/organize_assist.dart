@@ -21,7 +21,7 @@ class OrganizeOrderAssist extends DartAssist {
     ChangeReporter reporter,
     CustomLintContext context,
     SourceRange target,
-  ) {
+  ) async {
     if (_enableLogs) {
       d.log('---------FIX RUN AGAIN---------');
       d.log(target.toString());
@@ -90,6 +90,11 @@ class OrganizeOrderAssist extends DartAssist {
           String? correctMemberSource;
           SourceRange? currentRange;
 
+          // No need in change if same member
+          if ((orderedMembers[i].members.isEmpty &&
+                  formattedList[i].members.isEmpty) &&
+              orderedMembers[i].member == formattedList[i].member) continue;
+
           if (orderedMembers[i].members.isEmpty) {
             correctMemberSource = orderedMembers[i].member.toSource();
           } else {
@@ -108,7 +113,7 @@ class OrganizeOrderAssist extends DartAssist {
 
           // Replace the first member with the second member's code
           builder.addReplacement(currentRange, (buffer) {
-            buffer.write(correctMemberSource!);
+            buffer.write('${correctMemberSource!}\n');
           });
         }
 

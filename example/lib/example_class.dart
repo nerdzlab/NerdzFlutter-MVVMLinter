@@ -7,10 +7,20 @@ class AnotherClass {
   // int a = 3;
 
   set as(int a) => a = a;
+  set as2(int a) => a = a;
+
+  get value => _value;
+  int _value = 3;
+  _setValue(int a) => _value = 3;
 
   int get structValue => _structValue;
   int _structValue = 0;
   _setStructValue(int structValue) => _structValue = structValue;
+
+  void fu() {
+    //
+  }
+
   // void _foo() {
   //   int w = 2;
   // }
