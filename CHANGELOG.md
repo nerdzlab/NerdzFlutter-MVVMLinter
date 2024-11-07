@@ -1,3 +1,9 @@
+## 1.2.1
+
+### Changed
+
+- Updated formatting.
+
 ## 1.2.0
 
 ### Changed
